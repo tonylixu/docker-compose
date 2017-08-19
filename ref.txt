@@ -81,3 +81,16 @@ environment: Add environment variables. You can use either an array or a diction
     need to be enclosed in quotes to ensure they are not converted to True or False by the YML parser. Environment variables with
     only a key are resolved to their values on the machine Compose is running on, which can be helpful for secret or host-specific
     values.
+
+links: Link to containers in another service. Either specify both the service name and a link alias ("SERVICE:ALIAS"), or
+    just the service name.
+    For example:
+        web:
+          links:
+            - "db"
+            - "db:database"
+            - "redis"
+    Containers for the linked service will be reachable at a hostname identical to the alias, or the service name if no alias was
+    specified.
+
+    Links also express dependency between services in the same way as depends_on, so that determine the order of service startup.
