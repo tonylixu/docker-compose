@@ -25,3 +25,21 @@ ports: Expose ports. Either specify both ports (HOST:CONTAINER), or just the con
     ports:
       - "80:80"
 
+volumes: Mount paths or named volumes, optionally specifying a path on the host machine (HOST:CONTAINER), or an access mode
+    (HOST:CONTAINER). For v2 files, named volumes need to be specified with the top-level "volumes" key.
+    For example:
+    volumes:
+      # Just specify a path and let the Engine create a volume
+      - /var/lib/mysql
+
+      # Specify an absolute path mapping
+      - /opt/data:/var/lib/mysql
+
+      # Path on the host, relative to the Compose file
+      - ./cache:/tmp/cache
+
+      # User-relative path
+      - ~/configs:/etc/configs/:ro
+
+      # Named volume
+      - datavolume:/var/lib/mysql
