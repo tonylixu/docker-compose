@@ -63,3 +63,15 @@ entrypoint: The "ENTRYPOINT" specifies a command that will always be executed wh
     docker run --entrypoint="/bin/cat" ubuntu /etc/passwd
 
     So, main advantage is that with entrypoint you can pass arguments to your container.
+
+depends_on: Express dependency between services, whcih has two effects:
+    1: docker-compose up: will start services in dependency order
+    2: docker-compose up SERVICE will automatically include SERVICE's dependencies.
+    For example:
+        services:
+          web:
+            depends_on:
+              - db
+              - redis
+    db and redis will be started before web, or the "docker-compose up web" will aslo create and start db and redis.
+
