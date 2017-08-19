@@ -1,0 +1,27 @@
+Service: Services are really just "containers in production". A service only runs one image,
+     but it codifies the way that image runs-what ports it should use, how many
+     replicas of the container should run so the service has the capacity it needs, and so on.
+
+version:
+
+image: Specify the image to start the container from. Can either be a repository/tag or a partial image ID.
+    For example, "image: redis" or "image: ubuntu:14.04"
+    If the image does not exist, compose attempts to pull it, unless you have also specified build, in which case it builds
+    is using the specified options and tags it with the specified tag.
+
+container_name: Specify a custom container name, rather than a generated default name. Because Docker container names must be
+    unique, you cannot scale a service beyond 1 container if you have specified a custom name.
+
+restart: "no" is the default restart policy, and it will not restart a container under any circumstance. When "always" is
+    specified, the container alwasys restarts. The "on-failure" policy restarts a container if the exit code indicates an
+    on-failure error.
+
+ports: Expose ports. Either specify both ports (HOST:CONTAINER), or just the container port(a random host port will be chosen).
+    Note: When mapping ports in the HOST:CONTAINER format, you may experience erroneous results when using a container port lower
+    than 60, because YAML will parse numbers in the format xx:yy as sexagesimal(base 60). For this reason, we recommend always
+    explicitly specifying your port mappings as string.
+
+    For example:
+    ports:
+      - "80:80"
+
