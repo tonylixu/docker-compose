@@ -76,3 +76,8 @@ depends_on: Express dependency between services, whcih has two effects:
     db and redis will be started before web, or the "docker-compose up web" will aslo create and start db and redis.
 
 networks: Networks to join, referencing entries under the top-level networks key.
+
+environment: Add environment variables. You can use either an array or a dictionary. Any boolean values; true, false, yer no,
+    need to be enclosed in quotes to ensure they are not converted to True or False by the YML parser. Environment variables with
+    only a key are resolved to their values on the machine Compose is running on, which can be helpful for secret or host-specific
+    values.
