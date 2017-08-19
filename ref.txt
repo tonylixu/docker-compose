@@ -75,3 +75,4 @@ depends_on: Express dependency between services, whcih has two effects:
               - redis
     db and redis will be started before web, or the "docker-compose up web" will aslo create and start db and redis.
 
+networks: Networks to join, referencing entries under the top-level networks key.
