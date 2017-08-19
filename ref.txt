@@ -43,3 +43,6 @@ volumes: Mount paths or named volumes, optionally specifying a path on the host 
 
       # Named volume
       - datavolume:/var/lib/mysql
+
+volumes-from: Mount all of the volumes from another service or container, optionally specifying ro or rw access. If no access
+    is specified, then rw will be used.
