@@ -46,3 +46,20 @@ volumes: Mount paths or named volumes, optionally specifying a path on the host 
 
 volumes-from: Mount all of the volumes from another service or container, optionally specifying ro or rw access. If no access
     is specified, then rw will be used.
+
+entrypoint: The "ENTRYPOINT" specifies a command that will always be executed when the container starts. The "CMD" specifies
+    arguments that will be fed to the ENTRYPOINT. Override the default entrypoint. Docker has a default entrypoint which is "/bin/sh -c" but does not have a default
+    command. When you run docker like this: "docker run -i -t ubuntu bash" the entrypoint is the default "/bin/sh -c", the image
+    is ubuntu and the command is bash. This command is run via the entrypoint, i.e, the actual thing that gets executed is
+    "/bin/sh -c bash". The allowed docker to implement RUN quickly by relying on the shell's parser. Later on, people asked to
+    be able to customize this so ENTRYPOINT and -entrypoint has been introduced.
+
+    For example:
+    CMD is the default argument to container. Without entrypoint, default argument is command that is executed. With entrypoint,
+    cmd is passed to entrypoint as argument. You can emulate a command with entrypoint.
+    # No entrypoint
+    docker run ubuntu /bin/cat /etc/passwd
+    # With entry point, emulating cat command
+    docker run --entrypoint="/bin/cat" ubuntu /etc/passwd
+
+    So, main advantage is that with entrypoint you can pass arguments to your container.
