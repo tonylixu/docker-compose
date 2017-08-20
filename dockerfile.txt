@@ -1,0 +1,36 @@
+What is Dockerfile:
+    - A "Dockerfile" is a text document that contains all the commands a user
+      could call on the command line to assemble an image. Using "docker build" users
+      can create and automated build that executes several command-line instructions
+      in succession.
+
+Dockerfile Format:
+    # Comment
+    INSTRUCTION arguments
+    The instruction is not case-sensitive. However, convention is for them to be UPPERCASE
+    to distinguish them from arguments more easily.
+
+    A Dockerfile must start with a FROM instruction. ARG is the only instruction that may
+    precede FROM in the DOckerfile. FROM can appear multiple times within a signle Dockerfile.
+    to create multiple images or use one build statge as a dependency for another.
+
+    Docker runs instructions in a Dockerfile in order. A Dockerfile must start with a "FROM"
+    instruction. The "FROM" instruction specifies the Base Image from which you are building.
+    FROM may only be preceded by one or more ARG instructions, which declare arguments that
+    are used in FROM lines in the Dockerfile.
+
+    Note, once a coment, empty line or builder instruction has been processed, Docker no longer
+    looks for parser directives. Instead it treats anything formatted as a parser directive as
+    a comment and does not attempt to validate if it might be a parser directive. Therefore all
+    parser directives must be at very top of a Dockerfile.
+
+Example Dockerfile:
+# Initializes a new build stage and sets the "Base Image"
+FROM php:7.1.8-apache
+
+ARG DOCKER_XENFORO_PHP_EXT_INSTALL
+ARG DOCKER_XENFORO_PHP_PECL_INSTALL
+
+COPY ./build.sh /build.sh
+RUN /build.sh && rm /build.sh
+
