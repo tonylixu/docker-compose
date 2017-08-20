@@ -24,6 +24,23 @@ Dockerfile Format:
     a comment and does not attempt to validate if it might be a parser directive. Therefore all
     parser directives must be at very top of a Dockerfile.
 
+FROM:
+    FROM instructions support variables that are delcared by any ARG instructions that occur
+    before the first FROM.
+
+    For exmaple:
+    ARG CODE_VERSION=latest
+    FROM base:${CODE_VERSION}
+    CMD /code/run-app
+
+    An ARG declared before a FROM is outside of a build stage, so it can't be used
+    in any instruction after a FROM. To use the default value of an ARG declared
+    before the first FROM use an ARG instuction without a value inside of a build stage:
+    ARG VERSION=latest
+    FROM busybox:$VERSION
+    ARG VERSION
+    RUN echo $VERSION > image_version
+
 Example Dockerfile:
 # Initializes a new build stage and sets the "Base Image"
 FROM php:7.1.8-apache
