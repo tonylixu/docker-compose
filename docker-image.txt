@@ -1,0 +1,43 @@
+Image vs Dockerfile:
+        Docker uses images to run your code, not the Dockerfile. The Dockerfile is used
+    to build the image when you run docker build.
+
+Registry vs Index:
+        An index manages user accounts, permissions, search, tagging and all that nice
+    stuff that's in the public web interface.
+        A registry stores and serves up the actual image assets, and it delegates
+    authentication to the index.
+        A "docker search" searches the index, not the registry. In fact, it might be
+    searching multple registries that the index is aware of.
+        Once you do "docker push or pull", the index determines if you are allowed to
+    access or modify the image, but the registry is the piece that stores or sends
+    it down the wire.
+        Beyond that, when you are working locally and running commands like "docker images",
+    you are interacting with somthing that is neither an index or a registry, but a
+    little of both.
+        A registry holds holds a colelction of named repositories, which themselves
+    are a collection of images tracked by GUIDs.
+
+Repository:
+        When you run "docker build" or "docker commit", you can speficy a name for
+    the image. The name is usually in the format of "uesrname/image_name", but it
+    doesn't have to be. It could be anything.
+
+        However, when the time comes to "docker push", the index will look at the
+    name, and will check to see if it has a matching repository.
+
+    For example:
+        REPOSITORY                               TAG                 IMAGE ID            CREATED             SIZE
+        jwilder/docker-gen                       0.7.3               66fa1d05d9ba        10 weeks ago        19.61 MB
+        pixelfordinner/nginx                     latest              faf07180054b        10 weeks ago        15.51 MB
+        osixia/phpldapadmin                      latest              9ba7585287e9        3 months ago        258.9 MB
+        osixia/openldap                          latest              7a1e535d0060        3 months ago        222.8 MB
+        vimagick/tinc                            latest              778b80cda06e        4 months ago        5.751 MB
+        kylemanna/openvpn                        latest              e95632dd0d8e        4 months ago        15.15 MB
+        jrcs/letsencrypt-nginx-proxy-companion   v1.4                05460ca0d93a        7 months ago
+
+        In this example, we have 7 repositories.
+
+Local Storage on the Docker Host:
+        The first place to look is in /var/lib/docker/. In my case, all the images
+    are stored in "/var/lib/docker/overlay"
