@@ -51,3 +51,18 @@ ARG DOCKER_XENFORO_PHP_PECL_INSTALL
 COPY ./build.sh /build.sh
 RUN /build.sh && rm /build.sh
 
+COPY:
+
+RUN:
+    RUN has two forms:
+        1. RUN <cmd> which is a shell form, the cmd is run in a shell.
+        2. RUN ["executable", "arg1", "arg2"] which is an exec form.
+
+    The RUN instuction will execute any commands in a new layer on top of the current
+    image and commit the results. The resulting committed image will be used for the
+    next step in the Dockerfile.
+
+    RUN /bin/bash -c 'source $HOME/.bashrc; \
+    echo $HOME'
+    vs
+    RUN /bin/bash -c 'source $HOME/.bashrc; echo $HOME'
