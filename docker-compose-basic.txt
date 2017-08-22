@@ -3,3 +3,22 @@ Docker Compost:
     With compose, you use a compose file and configure your application's services. Then
     using a single command, you create and start all the services from your configuration.
 
+List of features:
+    - Multiple isolated envs on a signle host
+        - Compose use a proj name to iolsate envs, you can make use of proj
+          name in several different contexts:
+            - On a dev host, create multiple copies of single env
+            - On a CI server, to keep builds from interfering with each other
+            - On a shared host, prevent projs that use same service interfering
+              each other.
+    - Preserve volume data when containers are created
+        - Compose preservers all volumes used by your services. When
+          "docker-compose up" runs, if it finds any containers from previous runs,
+          it copies the volume from old container to the new one, this process ensures
+          no data loses
+    - Only recreate containers that have changed
+        - Compose caches the configuration userd to create a container. When
+          you restart a service that has not changed, compose re-uses the existing containers.
+    - Variables and moving a composition between environments
+        - Compose supports variables in the compose file. You can use these
+          variables to customize your composition for different envs.
