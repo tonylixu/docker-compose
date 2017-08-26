@@ -1,0 +1,4 @@
+Remove containers with Exited (#) error:
+    If you see a container with "Exited (0)" status, this probably happened when you run a "docker-compose up"
+without a "-d".
+    If this bothers you, you can do a "docker rm container-id"
