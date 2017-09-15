@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+      # Use an image that built from the Dockerfile in the current dir
+      build: .
+      # Forwards the exposed port 5000 on the container to host port 5000
+      ports:
+        - "5000:5000"
+  redis:
+    # Pull the public Redis image from Docker Hub registry
+    image: "redis:alpine"
+
