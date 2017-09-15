@@ -1,5 +1,5 @@
 # Build an image starting with the Python 3.4 image
-FROM python:3.4alpine
+FROM python:3.4-alpine
 # Add the current directory "." into the path "/code" in the image
 Add . /code
 # Set the working directory to "/code"
