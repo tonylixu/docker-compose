@@ -6,6 +6,8 @@ services:
       # Forwards the exposed port 5000 on the container to host port 5000
       ports:
         - "5000:5000"
+      volumes:
+        - .:/code
   redis:
     # Pull the public Redis image from Docker Hub registry
     image: "redis:alpine"
