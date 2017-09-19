@@ -3,9 +3,10 @@ version: '2'
 services:
   zimbra:
     image: zimbra_docker:latest
+    #image: tonylixu/zimbra:version1
     environment:
       - VIRTUAL_HOST=zimbra-tony.lixu.com
-      - password=docker
+      - PASSWORD=docker
     ports:
       - "25:25"
       - "80:80"
