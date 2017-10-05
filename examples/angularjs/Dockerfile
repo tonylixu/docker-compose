@@ -1,11 +1,11 @@
-FROM Ubuntu
+FROM ubuntu
 
 # Install necessary packages
 RUN apt-get update -qq
 RUN apt-get install -y build-essential nodejs npm nodejs-legacy vim
 
 RUN mkdir /bounce-rate-app
-ADD . /bounce-rate-app
+ADD ./bounce-rate-app /bounce-rate-app
 WORKDIR /bounce-rate-app
 
 # Install nodeJs packages
@@ -18,4 +18,4 @@ RUN bower install --allow-root
 
 EXPOSE 9999
 
-CMD["grunt", "dev"]
+CMD ["grunt", "dev"]

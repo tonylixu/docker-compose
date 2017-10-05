@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    # Use an image that built from the Dockerfile
+    build: .
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./bounce-rate-app:/bounce-rate-app
