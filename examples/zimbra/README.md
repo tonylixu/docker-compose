@@ -10,3 +10,7 @@ PASSWORD=zimbra zimbra_docker
 or
 $ docker-compose up -d
 ```
+
+### Zimbra DB
+https://www.zimbra.com/docs/os/5.0.19/administration_guide/3_Zimbra%20Servers.4.1.html
+https://wiki.zimbra.com/wiki/MySQL_Backup_and_Restore
