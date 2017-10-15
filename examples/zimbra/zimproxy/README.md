@@ -150,4 +150,4 @@ Hierarchy:
 ```
 
 
-Ref: [https://wiki.zimbra.com/wiki/Zimbra_Proxy_Guide | Zimbra Proxy]
+Ref: [https://wiki.zimbra.com/wiki/Zimbra_Proxy_Guide|Zimbra Proxy]
