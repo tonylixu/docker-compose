@@ -54,3 +54,12 @@ request and boost performance.
    * Sometimes the URL scheme that a legacy application presents is not ideal
      for discovery or search engine optimisation. A reverse proxy can rewrite
 URLs before passing them on to your back-end servers.
+
+### Components & Memcached
+ZImbra Proxy is designed to provide a HTTP[S]/POP[S]/IMAP[S] reverse proxy that
+is quick, reliable, and scalable. Zimbra Proxy includes the following:
+* Nginx - A high performance HTTP[S]/POP[S]/IMAP[S] proxy server which handles
+  all incoming HTTP[S]/POP[S]/IMAP[S] requests.
+* Zimbra Proxy Route Lookup Handler - This servlet handles queries for the user
+  account route information (the server and port number where user account
+resides).
