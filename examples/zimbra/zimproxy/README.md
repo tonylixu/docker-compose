@@ -31,3 +31,26 @@ reverse proxies are usually just referred to as 'load balancers'.
    * A reverse proxy can hide the topology and characteristics of your bacn-end
      servers by removing the need for direct internet access to them, you can
 place your reverse proxy in an internet facing DMZ.
+
+4. Authentication
+   * You can use your reverse proxy to provide a single point of authentication
+     for all HTTP requests.
+
+5. SSL Termination
+   * Here the reverse proxy handles incoming HTTPS connections, decrypting the
+     requests and passing unencrypted requests on to the web servers.
+
+6. Caching
+   * Currently memcached module is used to achieve caching of upstream routes
+     to mailstores on a per end-client basis. This significantly reduces the
+route lookup time thereby improving the total time required to process the
+request and boost performance.
+
+7. Centralised Logging and Auditing
+   * Because all HTTP requests are routed through the reverse proxy, it makes
+     an excellent point for logging and auditing.
+
+8. URL Rewriting
+   * Sometimes the URL scheme that a legacy application presents is not ideal
+     for discovery or search engine optimisation. A reverse proxy can rewrite
+URLs before passing them on to your back-end servers.
