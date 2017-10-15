@@ -63,3 +63,28 @@ is quick, reliable, and scalable. Zimbra Proxy includes the following:
 * Zimbra Proxy Route Lookup Handler - This servlet handles queries for the user
   account route information (the server and port number where user account
 resides).
+
+### Architecture and Flow
+The following sequence explains the architecture and the login flow when an end
+client connects to Zimbra Proxy.
+1. End clients connect to Zimbra Proxy using HTTP[S]/POP[S]/IMAP[S] ports.
+2. Proxy will attmpt to contact a memcached server if available and with
+   caching enabled to query the upstream route information.
+3. If the route info is present in memcached, then this will be a cache-hit and
+   proxy connects to the corresponding Zimbra Mailbox server right away and
+initiates a web/mail proxy session.The Memcached componet stores the route
+information for the configured period of time. Zimbra proxy will use this route
+info instead of quering the Zimbra Proxy Route Lookup Handler.
+4. If the route information is not present in memcached, then this will be a
+   cache-miss case, so Zimbra Proxy will proceed sending an HTTP request to an
+available Zimbra Proxy Route Lookup Handler/NLE (elected by Round-Robin), to
+look up the upstream mailbox server where this user account resides.
+5. ZImbra Proxy Route Lookup Handler locates the route info from LDAP for the
+   account being accessed and returns this back to Zimbra Proxy.
+6. Zimbra Proxy uses this route information to connect to the corresponding
+   Zimbra Mailbox server and initiates a web/mail proxy session. It will also
+cache this route information into a memcached server so that the next time this
+user logs in, the memcached server will have the upstream information available
+in its cache, and so Zimbra Proxy will not need to contact NLE.The end client
+is completely transparent to this and behaves as if it is connecting directly
+to Zimbra Mailbox server.
