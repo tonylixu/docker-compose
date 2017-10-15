@@ -88,3 +88,22 @@ user logs in, the memcached server will have the upstream information available
 in its cache, and so Zimbra Proxy will not need to contact NLE.The end client
 is completely transparent to this and behaves as if it is connecting directly
 to Zimbra Mailbox server.
+
+### Proxy Ports
+Zimbra Proxy Ports (External to ZCS)    Port
+HTTP    80
+HTTPS    443
+POP3    110
+POP3S (Secure POP3)    995
+IMAP    143
+IMAPS (Secure IMAP)    993
+Proxy Admin console    9071
+Zimbra Mailbox Ports (Internal to ZCS)    Port
+Route Lookup Handler    7072
+HTTP Backend (if Proxy configured)    8080
+HTTPS Backend (if Proxy configured)    8443
+POP3 Backend (if Proxy configured)    7110
+POP3S Backend (if Proxy configured)    7995
+IMAP Backend (if Proxy configured)    7143
+IMAPS Backend (if Proxy configured)    7993
+Mailbox Admin console    7071
