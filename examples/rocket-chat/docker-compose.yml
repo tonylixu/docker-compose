@@ -7,7 +7,9 @@ services:
     volumes:
       - ./uploads:/app/uploads
     environment:
-      - PORT=3000
+      - VIRTUAL_HOST=rocketchat.greyswancorp.com
+      - VIRTUAL_PORT=3000
+      - VIRTUAL_PROTO=https
       - ROOT_URL=http://localhost:3000
       - MONGO_URL=mongodb://mongo:27017/rocketchat
       - MONGO_OPLOG_URL=mongodb://mongo:27017/local
@@ -50,3 +52,8 @@ services:
     # this is used to expose the hubot port for notifications on the host on port 3001, e.g. for hubot-jenkins-notifier
     ports:
       - "3001:8080"
+# Uncomment this only if you have nginx-proxy service
+networks:
+    default:
+      external:
+        name: nginx-proxy
