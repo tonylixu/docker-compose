@@ -1,4 +1,6 @@
 #!/bin/bash
+## This is assuming you placed the archive.json in /opt/rocketchat/data/dump/
+## (which is linked to the container's /data/dump folder)
 set -ex
 APP_NAME="rocketchat"
 TIMESTAMP=`date +%F-%H%M`
