@@ -1,0 +1,6 @@
+Address = server_ip
+Subnet = 10.10.0.1/32
+
+-----BEGIN RSA PUBLIC KEY-----
+
+-----END RSA PUBLIC KEY-----
