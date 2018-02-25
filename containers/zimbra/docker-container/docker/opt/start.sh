@@ -8,10 +8,6 @@ RANDOMHAM=$(date +%s|sha256sum|base64|head -c 10)
 RANDOMSPAM=$(date +%s|sha256sum|base64|head -c 10)
 RANDOMVIRUS=$(date +%s|sha256sum|base64|head -c 10)
 
-## Print hostname and domain
-echo "HOSTNAME is $HOSTNAME"
-echo "DOMAIN is $DOMAIN"
-
 ## Installing the DNS Server ##
 echo "Configuring DNS Server"
 sed "s/-u/-4 -u/g" /etc/default/bind9 > /etc/default/bind9.new
@@ -23,8 +19,7 @@ directory "/var/cache/bind";
 listen-on { $CONTAINERIP; }; # ns1 private IP address - listen on private network only
 allow-transfer { none; }; # disable zone transfers by default
 forwarders {
-8.8.8.8;
-8.8.4.4;
+10.10.0.2;
 };
 auth-nxdomain no; # conform to RFC1035
 #listen-on-v6 { any; };
@@ -143,18 +138,35 @@ echo "Update /etc/resolv.conf file"
 echo $'nameserver 127.0.0.1\nnameserver 8.8.8.8' > /etc/resolv.conf
 cat /etc/resolv.conf
 
+## Define running function
+function install_zimbra {
+    echo "Installing Zimbra Collaboration"
+    echo "Extracting files from the archive"
+    tar xzvf /opt/zimbra-install/zimbra-zcs-8.6.0.tar.gz -C /opt/zimbra-install/
+
+    echo "Installing Zimbra Collaboration just the Software"
+    cd /opt/zimbra-install/zcs-* && ./install.sh -s < /opt/zimbra-install/installZimbra-keystrokes
+
+    echo "Installing Zimbra Collaboration injecting the configuration"
+    /opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
+}
+
+## Check if zimbra already installed
+su zimbra -c '/opt/zimbra/bin/zmcontrol -v'
+if [ $? -eq 0 ]
+then
+    echo "Zimbra already installed!, skip installation, start zimbra"
+    su zimbra -c '/opt/zimbra/bin/zmcontrol start'
+else
+    echo "No Zimbra found, will install"
+    install_zimbra
+fi
+
 ##Install the Zimbra Collaboration ##
+## Comment out by Tony Li Xu, 2017-09-24
+## Since we pre download the zimbra-zcs-8.6.0.tar.gz into opt/zimbra-install folder, we skip this step
 #echo "Downloading Zimbra Collaboration 8.6"
 #wget -O /opt/zimbra-install/zimbra-zcs-8.6.0.tar.gz https://files.zimbra.com/downloads/8.6.0_GA/zcs-8.6.0_GA_1153.UBUNTU14_64.20141215151116.tgz
-
-echo "Extracting files from the archive"
-tar xzvf /opt/zimbra-install/zimbra-zcs-8.6.0.tar.gz -C /opt/zimbra-install/
-
-echo "Installing Zimbra Collaboration just the Software"
-cd /opt/zimbra-install/zcs-* && ./install.sh -s < /opt/zimbra-install/installZimbra-keystrokes
-
-echo "Installing Zimbra Collaboration injecting the configuration"
-/opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
 
 if [[ $1 == "-d" ]]; then
   while true; do sleep 1000; done
