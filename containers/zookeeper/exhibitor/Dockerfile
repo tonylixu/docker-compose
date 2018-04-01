@@ -8,7 +8,7 @@ RUN apk add --no-cache \
 
 # Set up environment varibales
 ENV \
-    ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz" \
+    ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/d911a16d704bbe790d84bbacc655ef050c1f5806/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
     BUILD_DEPS="curl maven"
 
@@ -44,6 +44,10 @@ ADD include/web.xml /opt/exhibitor/web.xml
 
 USER root
 WORKDIR /opt/exhibitor
-EXPOSE 2181 2888 3888 8181
+EXPOSE 2181 2888 3888 8080 8181
+
+VOLUME /opt/zookeeper/local_configs
+
+LABEL name="zookeeper-ex" version="3.4.8"
 
 ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/wrapper.sh"]
