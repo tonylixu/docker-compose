@@ -46,8 +46,10 @@ USER root
 WORKDIR /opt/exhibitor
 EXPOSE 2181 2888 3888 8080 8181
 
+# Volumes for store local config files
 VOLUME /opt/zookeeper/local_configs
 
+# Add name and version metadata to the image
 LABEL name="zookeeper-ex" version="3.4.8"
 
 ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/wrapper.sh"]
