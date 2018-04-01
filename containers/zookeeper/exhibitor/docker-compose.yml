@@ -12,5 +12,6 @@ services:
       - 8181:8181
     volumes:
       - "./data/:/opt/zookeeper/local_configs/"
+      - "./backup/:/opt/exhibitor/backup/"
 networks:
   zookeeper:

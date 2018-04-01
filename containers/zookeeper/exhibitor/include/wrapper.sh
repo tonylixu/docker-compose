@@ -37,6 +37,7 @@ cat <<- EOF > /opt/exhibitor/defaults.conf
 	auto-manage-instances-settling-period-ms=0
 	auto-manage-instances=1
 	auto-manage-instances-fixed-ensemble-size=$ZK_ENSEMBLE_SIZE
+	backup-extra=/opt/exhibitor/backup
 EOF
 
 
