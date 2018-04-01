@@ -46,7 +46,7 @@ USER root
 WORKDIR /opt/exhibitor
 EXPOSE 2181 2888 3888 8080 8181
 
-# Volumes for store local config files
+# Volumes for store local files
 VOLUME /opt/zookeeper/local_configs
 
 # Add name and version metadata to the image
