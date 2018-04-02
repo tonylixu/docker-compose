@@ -2,7 +2,7 @@ version: "3"
 
 services:
   zookeeper:
-    image: "zookeeper-ex"
+    build: .
     hostname: zookeeper1
     networks:
       - zookeeper
