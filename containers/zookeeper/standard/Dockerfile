@@ -5,7 +5,6 @@ RUN apk add --no-cache \
     bash \
     su-exec
 
-# Set up environment varibales
 ENV ZOO_USER=zookeeper \
     ZOO_CONF_DIR=/conf \
     ZOO_DATA_DIR=/data \
@@ -23,7 +22,7 @@ RUN set -ex; \
     chown "$ZOO_USER:$ZOO_USER" "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR"
 
 ARG GPG_KEY=D0BC8D8A4E90A40AFDFC43B3E22A746A68E327C1
-ARG DISTRO_NAME=zookeeper-3.3.6
+ARG DISTRO_NAME=zookeeper-3.4.11
 
 # Download Apache Zookeeper, verify its PGP signature, untar and clean up
 RUN set -ex; \
