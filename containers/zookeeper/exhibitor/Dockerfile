@@ -17,15 +17,12 @@ RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
 ENV MAVEN_HOME /usr/share/maven
 
 ENV \
-    ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz" \
+    ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.11/zookeeper-3.4.11.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml"
 
 
 # Use one step so we can remove intermediate dependencies and minimize size
 RUN \
-    # Install dependencies
-    apk update \
-    && apk add bash curl \
 
     # Install ZK
     && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
@@ -54,6 +51,6 @@ EXPOSE 2181 2888 3888 8080 8181
 VOLUME /opt/zookeeper/local_configs
 
 # Add name and version metadata to the image
-LABEL name="zookeeper-ex" version="3.4.8"
+LABEL name="zookeeper-ex" version="3.4.11"
 
 ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/wrapper.sh"]
