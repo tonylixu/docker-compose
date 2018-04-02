@@ -21,8 +21,9 @@ RUN \
     apk update \
     && apk add wget bash curl \
     && curl -Lo /tmp/apache-maven-3.5.3-bin.tar.gz $MAVEN_BINARY \
-    && tar -xz -f /tmp/apache-maven-3.5.3-bin.tar.gz -C /usr/lib/mvn \
+    && tar -xz -f /tmp/apache-maven-3.5.3-bin.tar.gz \
     && rm /tmp/apache-maven-3.5.3-bin.tar.gz \
+    && mv /tmp/apache-maven-3.5.3 /usr/lib/mvn \
 
     # Install ZK
     && curl -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
