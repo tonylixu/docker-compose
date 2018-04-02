@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  zookeeper:
+    build: .
+    image: tony/zookeeper-ex
+    hostname: zookeeper1
+    networks:
+      - zookeeper
+    ports:
+      - 2181:2181
+      - 3888:3888
+      - 8080:8080
+      - 8181:8181
+    volumes:
+      - "./data/:/opt/zookeeper/local_configs/"
+      - "./backup/:/opt/exhibitor/backup/"
+networks:
+  zookeeper:
