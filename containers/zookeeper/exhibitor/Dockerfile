@@ -1,23 +1,31 @@
-FROM andreptb/oracle-java:8-alpine
+FROM openjdk:8-jdk-alpine
+
+RUN apk add --no-cache curl tar bash procps
+
+ARG MAVEN_VERSION=3.5.3
+ARG USER_HOME_DIR="/root"
+ARG SHA=b52956373fab1dd4277926507ab189fb797b3bc51a2a267a193c931fffad8408
+ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
+
+RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
+  && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+  && echo "${SHA}  /tmp/apache-maven.tar.gz" | sha256sum -c - \
+  && tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 \
+  && rm -f /tmp/apache-maven.tar.gz \
+  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+ENV MAVEN_HOME /usr/share/maven
 
 ENV \
     ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml"
 
-ENV MAVEN_VERSION 3.5.2
-ENV MAVEN_HOME /usr/lib/maven
-ENV PATH $MAVEN_HOME/bin:$PATH
 
 # Use one step so we can remove intermediate dependencies and minimize size
 RUN \
     # Install dependencies
     apk update \
-    && apk add wget bash curl \
-    && cd /tmp \
-    && wget -q http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz -O - | tar xzf - \
-    && mv /tmp/apache-maven-$MAVEN_VERSION /usr/lib/maven \
-    && ln -s /usr/lib/maven/bin/mvn /usr/bin/mvn \
-    && rm -rf /tmp/* \
+    && apk add bash curl \
 
     # Install ZK
     && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
