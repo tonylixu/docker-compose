@@ -21,7 +21,7 @@ RUN \
     apk update \
     && apk add wget bash curl \
     && curl -Lo /tmp/apache-maven-3.5.3-bin.tar.gz $MAVEN_BINARY \
-    && ls /tmp
+    && ls /tmp \
     && tar -xfz /tmp/apache-maven-3.5.3-bin.tar.gz -C /usr/lib/mvn \
     && rm apache-maven-3.5.3-bin.tar.gz \
 
