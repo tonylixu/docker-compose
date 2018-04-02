@@ -20,7 +20,7 @@ RUN \
     apk update \
     && apk add wget bash curl \
     && wget --progress dot:mega http://ftp.fau.de/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz\
-    && tar xfz apache-maven-3.5.3-bin.tar.gz \
+    && tar -xfz apache-maven-3.5.3-bin.tar.gz \
     && rm apache-maven-3.5.3-bin.tar.gz \
     && mv apache-maven-3.5.3 /usr/lib/mvn \
 
