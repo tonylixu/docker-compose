@@ -51,6 +51,6 @@ EXPOSE 2181 2888 3888 8080 8181
 VOLUME /opt/zookeeper/local_configs
 
 # Add name and version metadata to the image
-LABEL name="zookeeper-ex" version="3.4.11"
+LABEL name="ex-zookeeper" version="3.4.11"
 
 ENTRYPOINT ["bash", "-ex", "/opt/exhibitor/wrapper.sh"]
