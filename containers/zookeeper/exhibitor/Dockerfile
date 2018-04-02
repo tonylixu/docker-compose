@@ -1,76 +1,38 @@
-FROM alpine:3.2
+FROM debian:7.8
 
 MAINTAINER Tony Li Xu <tony@lixu.ca>
 
-# Install cURL
-RUN apk --update add curl ca-certificates tar && \
-    curl -Ls https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/glibc-2.21-r2.apk > /tmp/glibc-2.21-r2.apk && \
-    apk add --allow-untrusted /tmp/glibc-2.21-r2.apk
-
-# Java Version
-ENV JAVA_VERSION_MAJOR 8
-ENV JAVA_VERSION_MINOR 161
-ENV JAVA_VERSION_BUILD 12
-ENV JAVA_PACKAGE       jdk
-
-# Download and unarchive Java
-RUN mkdir /opt && curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie"\
-  http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
-    | tar -xzf - -C /opt &&\
-    ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk &&\
-    rm -rf /opt/jdk/*src.zip \
-           /opt/jdk/lib/missioncontrol \
-           /opt/jdk/lib/visualvm \
-           /opt/jdk/lib/*javafx* \
-           /opt/jdk/jre/lib/plugin.jar \
-           /opt/jdk/jre/lib/ext/jfxrt.jar \
-           /opt/jdk/jre/bin/javaws \
-           /opt/jdk/jre/lib/javaws.jar \
-           /opt/jdk/jre/lib/desktop \
-           /opt/jdk/jre/plugin \
-           /opt/jdk/jre/lib/deploy* \
-           /opt/jdk/jre/lib/*javafx* \
-           /opt/jdk/jre/lib/*jfx* \
-           /opt/jdk/jre/lib/amd64/libdecora_sse.so \
-           /opt/jdk/jre/lib/amd64/libprism_*.so \
-           /opt/jdk/jre/lib/amd64/libfxplugins.so \
-           /opt/jdk/jre/lib/amd64/libglass.so \
-           /opt/jdk/jre/lib/amd64/libgstreamer-lite.so \
-           /opt/jdk/jre/lib/amd64/libjavafx*.so \
-           /opt/jdk/jre/lib/amd64/libjfx*.so
-
-# Set environment
-ENV JAVA_HOME /opt/jdk
-ENV PATH ${PATH}:${JAVA_HOME}/bin
-#FROM java:openjdk-8-jre-alpine
-
 ENV \
     ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz" \
-    EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml"
+    EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/d911a16d704bbe790d84bbacc655ef050c1f5806/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
+    # Append "+" to ensure the package doesn't get purged
+    BUILD_DEPS="curl maven openjdk-8-jdk+" \
+    DEBIAN_FRONTEND="noninteractive"
 
-ENV PATH $PATH:/usr/lib/mvn/bin
 
-# Use one step so we can remove intermediate dependencies and minimize size
 RUN \
     # Install dependencies
-    apk update \
-    && apk add wget bash curl \
-    && wget --progress dot:mega http://ftp.fau.de/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz \
-    && tar xfz apache-maven-3.5.3-bin.tar.gz \
-    && rm apache-maven-3.5.3-bin.tar.gz \
-    && mv apache-maven-3.5.3 /usr/lib/mvn \
+    apt-get update \
+    && apt-get install -y --allow-unauthenticated --no-install-recommends $BUILD_DEPS \
+
+    # Default DNS cache TTL is -1. DNS records, like, change, man.
+    && grep '^networkaddress.cache.ttl=' /etc/java-8-openjdk/security/java.security || echo 'networkaddress.cache.ttl=60' >> /etc/java-8-openjdk/security/java.security \
 
     # Install ZK
-    && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
+    && curl -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
     && mkdir -p /opt/zookeeper/transactions /opt/zookeeper/snapshots \
-    && tar xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip-components=1 \
+    && tar -xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip=1 \
     && rm /tmp/zookeeper.tgz \
 
     # Install Exhibitor
     && mkdir -p /opt/exhibitor \
-    && curl -s -Lo /opt/exhibitor/pom.xml $EXHIBITOR_POM \
+    && curl -Lo /opt/exhibitor/pom.xml $EXHIBITOR_POM \
     && mvn -f /opt/exhibitor/pom.xml package \
-    && ln -s /opt/exhibitor/target/exhibitor*jar /opt/exhibitor/exhibitor.jar
+    && ln -s /opt/exhibitor/target/exhibitor*jar /opt/exhibitor/exhibitor.jar \
+
+    # Remove build-time dependencies
+    && apt-get purge -y --auto-remove $BUILD_DEPS \
+    && rm -rf /var/lib/apt/lists/*
 
 # Add the wrapper script to setup configs and exec exhibitor
 ADD include/wrapper.sh /opt/exhibitor/wrapper.sh
