@@ -1,7 +1,9 @@
 FROM openjdk:8-jdk-alpine
 
+# Install utilities
 RUN apk add --no-cache curl tar bash procps
 
+# Install Maven
 ARG MAVEN_VERSION=3.5.3
 ARG USER_HOME_DIR="/root"
 ARG SHA=b52956373fab1dd4277926507ab189fb797b3bc51a2a267a193c931fffad8408
@@ -16,12 +18,12 @@ RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
 
 ENV MAVEN_HOME /usr/share/maven
 
+# Install Zookeeper and Exhibitor
 ENV \
     ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.11/zookeeper-3.4.11.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml"
 
 
-# Use one step so we can remove intermediate dependencies and minimize size
 RUN \
     # Install ZK
     curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
@@ -34,7 +36,6 @@ RUN \
     && curl -s -Lo /opt/exhibitor/pom.xml $EXHIBITOR_POM \
     && mvn -f /opt/exhibitor/pom.xml package \
     && ln -s /opt/exhibitor/target/exhibitor*jar /opt/exhibitor/exhibitor.jar
-
 
 # Add the wrapper script to setup configs and exec exhibitor
 ADD include/wrapper.sh /opt/exhibitor/wrapper.sh
