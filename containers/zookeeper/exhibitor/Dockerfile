@@ -11,7 +11,7 @@ ENV \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml"
 
 ENV MAVEN_VERSION 3.5.2
-ENV MAVEN_HOME /usr/lib/mvn
+ENV MAVEN_HOME /usr/lib/maven
 ENV PATH $MAVEN_HOME/bin:$PATH
 
 # Use one step so we can remove intermediate dependencies and minimize size
@@ -19,10 +19,11 @@ RUN \
     # Install dependencies
     apk update \
     && apk add wget bash curl \
-    && wget http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
-    && tar -zxvf apache-maven-$MAVEN_VERSION-bin.tar.gz \
-    && rm apache-maven-$MAVEN_VERSION-bin.tar.gz \
-    && mv apache-maven-$MAVEN_VERSION /usr/lib/mvn \
+    cd /tmp && \
+    wget -q http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz -O - | tar xzf - && \
+    mv /tmp/apache-maven-$MAVEN_VERSION /usr/lib/maven && \
+    ln -s /usr/lib/maven/bin/mvn /usr/bin/mvn && \
+    rm -rf /tmp/* && \
 
     # Install ZK
     && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
