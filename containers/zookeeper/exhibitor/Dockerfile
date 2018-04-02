@@ -30,17 +30,19 @@ ENV \
     ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz" \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml"
 
-ENV PATH $PATH:/usr/lib/mvn/bin
+ENV MAVEN_VERSION 3.5.2
+ENV MAVEN_HOME /usr/lib/mvn
+ENV PATH $MAVEN_HOME/bin:$PATH
 
 # Use one step so we can remove intermediate dependencies and minimize size
 RUN \
     # Install dependencies
     apk update \
     && apk add wget bash curl \
-    && wget --progress dot:mega http://ftp.fau.de/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz \
-    && tar xfz apache-maven-3.5.3-bin.tar.gz \
-    && rm apache-maven-3.5.3-bin.tar.gz \
-    && mv apache-maven-3.5.3 /usr/lib/mvn \
+    && wget http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    && tar -zxvf apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    && rm apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    && mv apache-maven-$MAVEN_VERSION /usr/lib/mvn \
 
     # Install ZK
     && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
