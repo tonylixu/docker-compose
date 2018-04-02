@@ -1,47 +1,76 @@
-FROM openjdk:8-jre-alpine
-MAINTAINER Tony Li Xu tony@lixu.ca
+FROM alpine:3.2
 
-# Install required packages
-RUN apk add --no-cache \
-    bash \
-    su-exec
+MAINTAINER Tony Li Xu <tony@lixu.ca>
 
-# Set up environment varibales
+# Install cURL
+RUN apk --update add curl ca-certificates tar && \
+    curl -Ls https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/glibc-2.21-r2.apk > /tmp/glibc-2.21-r2.apk && \
+    apk add --allow-untrusted /tmp/glibc-2.21-r2.apk
+
+# Java Version
+ENV JAVA_VERSION_MAJOR 8
+ENV JAVA_VERSION_MINOR 161
+ENV JAVA_VERSION_BUILD 12
+ENV JAVA_PACKAGE       jdk
+
+# Download and unarchive Java
+RUN mkdir /opt && curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie"\
+  http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
+    | tar -xzf - -C /opt &&\
+    ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk &&\
+    rm -rf /opt/jdk/*src.zip \
+           /opt/jdk/lib/missioncontrol \
+           /opt/jdk/lib/visualvm \
+           /opt/jdk/lib/*javafx* \
+           /opt/jdk/jre/lib/plugin.jar \
+           /opt/jdk/jre/lib/ext/jfxrt.jar \
+           /opt/jdk/jre/bin/javaws \
+           /opt/jdk/jre/lib/javaws.jar \
+           /opt/jdk/jre/lib/desktop \
+           /opt/jdk/jre/plugin \
+           /opt/jdk/jre/lib/deploy* \
+           /opt/jdk/jre/lib/*javafx* \
+           /opt/jdk/jre/lib/*jfx* \
+           /opt/jdk/jre/lib/amd64/libdecora_sse.so \
+           /opt/jdk/jre/lib/amd64/libprism_*.so \
+           /opt/jdk/jre/lib/amd64/libfxplugins.so \
+           /opt/jdk/jre/lib/amd64/libglass.so \
+           /opt/jdk/jre/lib/amd64/libgstreamer-lite.so \
+           /opt/jdk/jre/lib/amd64/libjavafx*.so \
+           /opt/jdk/jre/lib/amd64/libjfx*.so
+
+# Set environment
+ENV JAVA_HOME /opt/jdk
+ENV PATH ${PATH}:${JAVA_HOME}/bin
+#FROM java:openjdk-8-jre-alpine
+
 ENV \
     ZK_RELEASE="http://www.apache.org/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz" \
-    EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/d911a16d704bbe790d84bbacc655ef050c1f5806/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
-    MAVEN_BINARY="http://ftp.fau.de/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz" \
-    BUILD_DEPS="curl maven"
+    EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml"
 
 ENV PATH $PATH:/usr/lib/mvn/bin
 
-# Install Zookeeper and Exhibitor
+# Use one step so we can remove intermediate dependencies and minimize size
 RUN \
     # Install dependencies
     apk update \
     && apk add wget bash curl \
-    && curl -Lo /tmp/apache-maven-3.5.3-bin.tar.gz $MAVEN_BINARY \
-    && tar -xz -f /tmp/apache-maven-3.5.3-bin.tar.gz \
-    && rm /tmp/apache-maven-3.5.3-bin.tar.gz \
+    && wget --progress dot:mega http://ftp.fau.de/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz \
+    && tar xfz apache-maven-3.5.3-bin.tar.gz \
+    && rm apache-maven-3.5.3-bin.tar.gz \
     && mv apache-maven-3.5.3 /usr/lib/mvn \
 
     # Install ZK
-    && curl -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
+    && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
     && mkdir -p /opt/zookeeper/transactions /opt/zookeeper/snapshots \
-    && tar -xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip=1 \
+    && tar xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip-components=1 \
     && rm /tmp/zookeeper.tgz \
 
     # Install Exhibitor
     && mkdir -p /opt/exhibitor \
-    && curl -Lo /opt/exhibitor/pom.xml $EXHIBITOR_POM \
+    && curl -s -Lo /opt/exhibitor/pom.xml $EXHIBITOR_POM \
     && mvn -f /opt/exhibitor/pom.xml package \
-    && ln -s /opt/exhibitor/target/exhibitor*jar /opt/exhibitor/exhibitor.jar \
-
-# Get Exhibitor
-RUN mkdir /opt/exhibitor
-ADD include/pom.xml /opt/exhibitor/pom.xml
-RUN cd /opt/exhibitor && mvn clean package
-RUN ln -s /opt/exhibitor/target/${EXHIBITOR_NAME} /opt/exhibitor/exhibitor.jar
+    && ln -s /opt/exhibitor/target/exhibitor*jar /opt/exhibitor/exhibitor.jar
 
 # Add the wrapper script to setup configs and exec exhibitor
 ADD include/wrapper.sh /opt/exhibitor/wrapper.sh
