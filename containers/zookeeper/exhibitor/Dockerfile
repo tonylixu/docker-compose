@@ -15,8 +15,7 @@ ENV \
 # Install Zookeeper and Exhibitor
 RUN \
     # Install dependencies
-    apt-get update \
-    && apt-get install -y $BUILD_DEPS \
+    apk add $BUILD_DEPS \
 
     # Install ZK
     && curl -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
