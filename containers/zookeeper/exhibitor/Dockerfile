@@ -13,11 +13,11 @@ RUN \
     # Install dependencies
     apk update \
     && apk add wget bash curl \
-    cd /tmp && \
-    wget -q http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz -O - | tar xzf - && \
-    mv /tmp/apache-maven-$MAVEN_VERSION /usr/lib/maven && \
-    ln -s /usr/lib/maven/bin/mvn /usr/bin/mvn && \
-    rm -rf /tmp/* && \
+    && cd /tmp \
+    && wget -q http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz -O - | tar xzf - \
+    && mv /tmp/apache-maven-$MAVEN_VERSION /usr/lib/maven \
+    && ln -s /usr/lib/maven/bin/mvn /usr/bin/mvn \
+    && rm -rf /tmp/* \
 
     # Install ZK
     && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
