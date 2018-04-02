@@ -12,10 +12,17 @@ ENV \
     EXHIBITOR_POM="https://raw.githubusercontent.com/Netflix/exhibitor/d911a16d704bbe790d84bbacc655ef050c1f5806/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml" \
     BUILD_DEPS="curl maven"
 
+ENV PATH $PATH:/usr/lib/mvn/bin
+
 # Install Zookeeper and Exhibitor
 RUN \
     # Install dependencies
-    apk add $BUILD_DEPS \
+    apk update \
+    && apk add wget bash curl \
+    && wget --progress dot:mega http://ftp.fau.de/apache/maven/maven-3/3.3.1/binaries/apache-maven-3.3.1-bin.tar.gz \
+    && tar xfz apache-maven-3.3.1-bin.tar.gz \
+    && rm apache-maven-3.3.1-bin.tar.gz \
+    && mv apache-maven-3.3.1 /usr/lib/mvn \
 
     # Install ZK
     && curl -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
