@@ -23,9 +23,8 @@ ENV \
 
 # Use one step so we can remove intermediate dependencies and minimize size
 RUN \
-
     # Install ZK
-    && curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
+    curl -s -Lo /tmp/zookeeper.tgz $ZK_RELEASE \
     && mkdir -p /opt/zookeeper/transactions /opt/zookeeper/snapshots \
     && tar xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip-components=1 \
     && rm /tmp/zookeeper.tgz \
