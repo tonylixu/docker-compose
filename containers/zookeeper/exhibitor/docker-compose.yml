@@ -7,10 +7,11 @@ services:
     networks:
       - zookeeper
     ports:
-      - 2181:2181
-      - 3888:3888
-      - 8080:8080
-      - 8181:8181
+      - 2181
+      - 2888
+      - 3888
+      - 8080
+      - 8181
     volumes:
       - "./data/:/opt/zookeeper/local_configs/"
       - "./backup/:/opt/exhibitor/backup/"
