@@ -2,8 +2,8 @@ version: "3"
 
 services:
   zookeeper:
-    build: .
-    image: tony/zookeeper-ex
+    # build: .
+    image: tonylixu/ex-zookeeper
     networks:
       - zookeeper
     ports:
