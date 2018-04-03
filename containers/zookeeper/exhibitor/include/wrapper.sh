@@ -40,7 +40,7 @@ cat <<- EOF > /opt/exhibitor/defaults.conf
 	backup-extra=/opt/exhibitor/backup
 EOF
 
-
+# If the length of AWS_ACCESS_KEY_ID is not zero
 if [[ -n ${AWS_ACCESS_KEY_ID} ]]; then
   cat <<- EOF > /opt/exhibitor/credentials.properties
     com.netflix.exhibitor.s3.access-key-id=${AWS_ACCESS_KEY_ID}
@@ -49,6 +49,7 @@ EOF
   S3_SECURITY="--s3credentials /opt/exhibitor/credentials.properties"
 fi
 
+# If the s3 bucket is given, otherwise we use local filesystem for backup
 if [[ -n ${S3_BUCKET} ]]; then
   echo "backup-extra=throttle\=&bucket-name\=${S3_BUCKET}&key-prefix\=${S3_PREFIX}&max-retries\=4&retry-sleep-ms\=30000" >> /opt/exhibitor/defaults.conf
 
